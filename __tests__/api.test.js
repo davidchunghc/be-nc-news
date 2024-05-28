@@ -4,6 +4,7 @@ const app = require("../app.js");
 const data = require("../db/data/test-data");
 const seed = require("../db/seeds/seed.js");
 const db = require("../db/connection.js");
+const endpoints = require("../endpoints.json");
 
 beforeAll(() => seed(data));
 afterAll(() => db.end());
@@ -34,6 +35,15 @@ describe("/api/topics", () => {
       .expect(400)
       .then((response) => {
         expect(response.body.msg).toBe("Bad request");
+      });
+  });
+
+  test("200: test for this endpoint responding with an accurate endpoint JSON object", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual(endpoints);
       });
   });
 });

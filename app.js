@@ -1,10 +1,15 @@
 const express = require("express");
-const { getApi, getTopics } = require("./controllers/api.controllers");
+const {
+  getHealthcheck,
+  getTopics,
+  getApi,
+} = require("./controllers/api.controllers");
 
 const app = express();
 
-app.get("/api/healthcheck", getApi);
+app.get("/api/healthcheck", getHealthcheck);
 app.get("/api/topics", getTopics);
+app.get("/api", getApi);
 
 app.use((req, res, next) => {
   const err = new Error("Bad request");

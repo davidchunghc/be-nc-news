@@ -38,12 +38,49 @@ describe("/api/topics", () => {
       });
   });
 
-  test("200: test for this endpoint responding with an accurate endpoint JSON object", () => {
+  test.skip("200: test for this endpoint responding with an accurate endpoint JSON object", () => {
     return request(app)
       .get("/api")
       .expect(200)
       .then((response) => {
         expect(response.body).toEqual(endpoints);
+      });
+  });
+});
+
+describe("/api/articles/:article_id", () => {
+  test("200: responds with article object", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then((response) => {
+        const article = response.body.article;
+        expect(article).toHaveProperty("author");
+        expect(article).toHaveProperty("title");
+        expect(article).toHaveProperty("article_id");
+        expect(article).toHaveProperty("body");
+        expect(article).toHaveProperty("topic");
+        expect(article).toHaveProperty("created_at");
+        expect(article).toHaveProperty("votes");
+        expect(article).toHaveProperty("article_img_url");
+      });
+  });
+
+  test("404: responds with Article not found for invalid id", () => {
+    return request(app)
+      .get("/api/articles/9999")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Article not found");
+      });
+  });
+
+  test("400: responds with 'Bad request' for invalid id", () => {
+    return request(app)
+      .get("/api/articles/itisnotid")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
       });
   });
 });

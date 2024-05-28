@@ -1,5 +1,9 @@
 const { request } = require("../app");
-const { getTopics, selectTopics } = require("../models/api.models");
+const {
+  getTopics,
+  selectTopics,
+  selectArticleById,
+} = require("../models/api.models");
 const endpoints = require("../endpoints.json");
 
 exports.getHealthcheck = (request, response) => {
@@ -14,6 +18,27 @@ exports.getTopics = (request, response, next) => {
     .catch(next);
 };
 
-exports.getApi = (req, res, next) => {
-  res.status(200).send(endpoints);
+exports.getApi = (request, response, next) => {
+  request.status(200).send(endpoints);
+};
+
+exports.getArticleById = (request, response, next) => {
+  const { article_id } = request.params;
+
+  if (isNaN(article_id)) {
+    const err = new Error("Bad request");
+    err.status = 400;
+    return next(err);
+  }
+
+  selectArticleById(article_id)
+    .then((article) => {
+      if (!article) {
+        const err = new Error("Article not found");
+        err.status = 404;
+        return next(err);
+      }
+      response.status(200).send({ article });
+    })
+    .catch(next);
 };

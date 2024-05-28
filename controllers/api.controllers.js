@@ -26,17 +26,13 @@ exports.getArticleById = (request, response, next) => {
   const { article_id } = request.params;
 
   if (isNaN(article_id)) {
-    const err = new Error("Bad request");
-    err.status = 400;
-    return next(err);
+    return Promise.reject({ status: 400, msg: "Bad request" }).catch(next);
   }
 
   selectArticleById(article_id)
     .then((article) => {
       if (!article) {
-        const err = new Error("Article not found");
-        err.status = 404;
-        return next(err);
+        return Promise.reject({ status: 404, msg: "Article not found" });
       }
       response.status(200).send({ article });
     })

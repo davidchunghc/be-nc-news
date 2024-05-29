@@ -1,5 +1,6 @@
 const request = require("supertest");
 const app = require("../app.js");
+const jestSorted = require("jest-sorted");
 
 const data = require("../db/data/test-data/index.js");
 const seed = require("../db/seeds/seed.js");
@@ -92,6 +93,7 @@ describe("/api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toBeInstanceOf(Array);
+        expect(body.articles).not.toHaveLength(0);
         body.articles.forEach((article) => {
           expect(article).toHaveProperty("author");
           expect(article).toHaveProperty("title");
@@ -106,25 +108,37 @@ describe("/api/articles", () => {
       });
   });
 
-  test("400: responds with 'Invalid query' for invalid sort_by query", () => {
+  test("200: articles are sorted by created_at in descending order", () => {
     return request(app)
-      .get("/api/articles?sort_by=nonsense")
-      .expect(400)
-      .then((response) => {
-        expect(response.body.msg).toBe("Invalid query");
-      });
-  });
-
-  test("400: responds with 'Invalid query' for invalid order query", () => {
-    return request(app)
-      .get("/api/articles?order=nonsense")
-      .expect(400)
-      .then((response) => {
-        expect(response.body.msg).toBe("Invalid query");
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
       });
   });
 });
 
 // describe("", () => {
 //   test("", () => {});
+// });
+
+// extra work that Hannah said can be removed
+// test("400: responds with 'Invalid query' for invalid sort_by query", () => {
+//   return request(app)
+//     .get("/api/articles?sort_by=nonsense")
+//     .expect(400)
+//     .then((response) => {
+//       expect(response.body.msg).toBe("Invalid query");
+//     });
+// });
+
+// test("400: responds with 'Invalid query' for invalid order query", () => {
+//   return request(app)
+//     .get("/api/articles?order=nonsense")
+//     .expect(400)
+//     .then((response) => {
+//       expect(response.body.msg).toBe("Invalid query");
+//     });
 // });

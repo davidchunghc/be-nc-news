@@ -41,11 +41,20 @@ exports.getArticleById = (request, response, next) => {
 };
 
 exports.getArticles = (request, response, next) => {
-  const { sort_by, order } = request.query;
-
-  selectAllArticles(sort_by, order)
+  selectAllArticles()
     .then((articles) => {
       response.status(200).send({ articles });
     })
     .catch(next);
 };
+
+// extra work that Hannah said can be removed
+// exports.getArticles = (request, response, next) => {
+//   const { sort_by, order } = request.query;
+
+//   selectAllArticles(sort_by, order)
+//     .then((articles) => {
+//       response.status(200).send({ articles });
+//     })
+//     .catch(next);
+// };

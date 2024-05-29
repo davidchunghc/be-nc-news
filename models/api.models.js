@@ -15,12 +15,13 @@ exports.selectArticleById = (article_id) => {
 };
 
 exports.selectAllArticles = (sort_by = "created_at", order = "DESC") => {
-  const validSortBy = ["created_at"];
-  const validOrder = ["ASC", "DESC"];
+  // extra work that Hannah said can be removed
+  // const validSortBy = ["created_at"];
+  // const validOrder = ["ASC", "DESC"];
 
-  if (!validSortBy.includes(sort_by) || !validOrder.includes(order)) {
-    return Promise.reject({ status: 400, msg: "Invalid query" });
-  }
+  // if (!validSortBy.includes(sort_by) || !validOrder.includes(order)) {
+  //   return Promise.reject({ status: 400, msg: "Invalid query" });
+  // }
 
   queryString = `
       SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count

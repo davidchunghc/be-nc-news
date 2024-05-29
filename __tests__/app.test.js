@@ -123,18 +123,20 @@ describe("/api/articles", () => {
 describe("/api/articles/:article_id/comments", () => {
   test("200: responds with an array of comments for the given article_id", () => {
     return request(app)
-      .get("/api/articles/3/comments")
+      .get("/api/articles/1/comments")
       .expect(200)
       .then(({ body }) => {
         expect(body.comments).toBeInstanceOf(Array);
-        expect(body.comments).not.toHaveLength(0);
+        expect(body.comments).toHaveLength(11);
         body.comments.forEach((comment) => {
-          expect(comment).toHaveProperty("comment_id");
-          expect(comment).toHaveProperty("votes");
-          expect(comment).toHaveProperty("created_at");
-          expect(comment).toHaveProperty("author");
-          expect(comment).toHaveProperty("body");
-          expect(comment).toHaveProperty("article_id");
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+          });
         });
       });
   });

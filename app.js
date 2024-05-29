@@ -13,10 +13,8 @@ app.get("/api/topics", getTopics);
 app.get("/api", getApi);
 app.get("/api/articles/:article_id", getArticleById);
 
-app.use((req, res, next) => {
-  const err = new Error("Bad request");
-  err.status = 400;
-  next(err);
+app.all("/*", (req, res) => {
+  res.status(404).send({ msg: "Route not found" });
 });
 
 app.use((err, req, res, next) => {

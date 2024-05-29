@@ -29,12 +29,12 @@ describe("/api/topics", () => {
       });
   });
 
-  test.skip("400: responds with bad request for invalid endpoint", () => {
+  test("400: responds with bad request for invalid endpoint", () => {
     return request(app)
       .get("/api/nonsense")
-      .expect(400)
+      .expect(404)
       .then((response) => {
-        expect(response.body.msg).toBe("Bad request");
+        expect(response.body.msg).toBe("Route not found");
       });
   });
 

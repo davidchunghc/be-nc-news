@@ -15,7 +15,7 @@ exports.selectArticleById = (article_id) => {
 };
 
 exports.selectAllArticles = (sort_by = "created_at", order = "DESC") => {
-  // extra work that Hannah said can be removed
+  // extra work that Hannah said can be removed, but I want to keep it in case I will need it again
   // const validSortBy = ["created_at"];
   // const validOrder = ["ASC", "DESC"];
 

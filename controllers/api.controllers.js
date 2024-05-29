@@ -3,6 +3,7 @@ const {
   getTopics,
   selectTopics,
   selectArticleById,
+  selectAllArticles,
 } = require("../models/api.models");
 const endpoints = require("../endpoints.json");
 
@@ -38,3 +39,22 @@ exports.getArticleById = (request, response, next) => {
     })
     .catch(next);
 };
+
+exports.getArticles = (request, response, next) => {
+  selectAllArticles()
+    .then((articles) => {
+      response.status(200).send({ articles });
+    })
+    .catch(next);
+};
+
+// extra work that Hannah said can be removed
+// exports.getArticles = (request, response, next) => {
+//   const { sort_by, order } = request.query;
+
+//   selectAllArticles(sort_by, order)
+//     .then((articles) => {
+//       response.status(200).send({ articles });
+//     })
+//     .catch(next);
+// };

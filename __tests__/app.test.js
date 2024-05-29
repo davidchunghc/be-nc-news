@@ -1,7 +1,8 @@
 const request = require("supertest");
 const app = require("../app.js");
+const jestSorted = require("jest-sorted");
 
-const data = require("../db/data/test-data");
+const data = require("../db/data/test-data/index.js");
 const seed = require("../db/seeds/seed.js");
 const db = require("../db/connection.js");
 const endpoints = require("../endpoints.json");
@@ -29,7 +30,7 @@ describe("/api/topics", () => {
       });
   });
 
-  test("400: responds with bad request for invalid endpoint", () => {
+  test("404: responds with 'Route not found' for invalid endpoint", () => {
     return request(app)
       .get("/api/nonsense")
       .expect(404)
@@ -85,6 +86,59 @@ describe("/api/articles/:article_id", () => {
   });
 });
 
+describe("/api/articles", () => {
+  test("200: responds with an array of articles that join with comments", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeInstanceOf(Array);
+        expect(body.articles).not.toHaveLength(0);
+        body.articles.forEach((article) => {
+          expect(article).toHaveProperty("author");
+          expect(article).toHaveProperty("title");
+          expect(article).toHaveProperty("article_id");
+          expect(article).toHaveProperty("topic");
+          expect(article).toHaveProperty("created_at");
+          expect(article).toHaveProperty("votes");
+          expect(article).toHaveProperty("article_img_url");
+          expect(article).toHaveProperty("comment_count");
+          expect(article).not.toHaveProperty("body");
+        });
+      });
+  });
+
+  test("200: articles are sorted by created_at in descending order", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+});
+
 // describe("", () => {
 //   test("", () => {});
+// });
+
+// extra work that Hannah said can be removed
+// test("400: responds with 'Invalid query' for invalid sort_by query", () => {
+//   return request(app)
+//     .get("/api/articles?sort_by=nonsense")
+//     .expect(400)
+//     .then((response) => {
+//       expect(response.body.msg).toBe("Invalid query");
+//     });
+// });
+
+// test("400: responds with 'Invalid query' for invalid order query", () => {
+//   return request(app)
+//     .get("/api/articles?order=nonsense")
+//     .expect(400)
+//     .then((response) => {
+//       expect(response.body.msg).toBe("Invalid query");
+//     });
 // });

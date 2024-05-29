@@ -15,7 +15,7 @@ exports.selectArticleById = (article_id) => {
 };
 
 exports.selectAllArticles = (sort_by = "created_at", order = "DESC") => {
-  // extra work that Hannah said can be removed
+  // extra work that Hannah said can be removed, but I want to keep it in case I will need it again
   // const validSortBy = ["created_at"];
   // const validOrder = ["ASC", "DESC"];
 
@@ -34,4 +34,28 @@ exports.selectAllArticles = (sort_by = "created_at", order = "DESC") => {
   return db.query(queryString).then((result) => {
     return result.rows;
   });
+};
+
+exports.selectCommentsByArticleId = (article_id) => {
+  return db
+    .query(
+      `
+      SELECT comment_id, votes, created_at, author, body, article_id
+      FROM comments
+      WHERE article_id = $1
+      ORDER BY created_at DESC;
+    `,
+      [article_id]
+    )
+    .then((result) => {
+      return result.rows;
+    });
+};
+
+exports.checkArticleExists = (article_id) => {
+  return db
+    .query("SELECT * FROM articles WHERE article_id = $1;", [article_id])
+    .then((result) => {
+      return result.rowCount > 0;
+    });
 };

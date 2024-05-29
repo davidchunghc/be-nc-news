@@ -120,6 +120,83 @@ describe("/api/articles", () => {
   });
 });
 
+describe("/api/articles/:article_id/comments", () => {
+  test("201: responds with the posted comment", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toHaveProperty("comment_id");
+        expect(body.comment).toHaveProperty("votes", 0);
+        expect(body.comment).toHaveProperty("created_at");
+        expect(body.comment).toHaveProperty("author", "butter_bridge");
+        expect(body.comment).toHaveProperty(
+          "body",
+          "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky."
+        );
+        expect(body.comment).toHaveProperty("article_id", 1);
+      });
+  });
+
+  test("400: responds with 'Bad request' for invalid article_id", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+    };
+    return request(app)
+      .post("/api/articles/nonsense/comments")
+      .send(newComment)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
+      });
+  });
+
+  test("404: responds with 'Article not found' for that article_id is not exists", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+    };
+    return request(app)
+      .post("/api/articles/9999/comments")
+      .send(newComment)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Article not found");
+      });
+  });
+
+  test("400: responds with 'Missing required fields' if body is missing", () => {
+    const newComment = {
+      username: "butter_bridge",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Missing required fields");
+      });
+  });
+  test("400: responds with 'Missing required fields' if username is missing", () => {
+    const newComment = {
+      body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Missing required fields");
+      });
+  });
+});
+
 // describe("", () => {
 //   test("", () => {});
 // });

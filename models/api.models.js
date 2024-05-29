@@ -35,3 +35,24 @@ exports.selectAllArticles = (sort_by = "created_at", order = "DESC") => {
     return result.rows;
   });
 };
+
+exports.checkArticleExists = (article_id) => {
+  return db
+    .query("SELECT * FROM articles WHERE article_id = $1;", [article_id])
+    .then((result) => {
+      return result.rowCount > 0;
+    });
+};
+
+exports.insertComment = (article_id, username, body) => {
+  return db
+    .query(
+      `INSERT INTO comments (article_id, author, body, votes, created_at)
+       VALUES ($1, $2, $3, 0, NOW())
+       RETURNING comment_id, votes, created_at, author, body, article_id;`,
+      [article_id, username, body]
+    )
+    .then((result) => {
+      return result.rows[0];
+    });
+};

@@ -4,6 +4,8 @@ const {
   selectTopics,
   selectArticleById,
   selectAllArticles,
+  checkArticleExists,
+  insertComment,
 } = require("../models/api.models");
 const endpoints = require("../endpoints.json");
 
@@ -44,6 +46,34 @@ exports.getArticles = (request, response, next) => {
   selectAllArticles()
     .then((articles) => {
       response.status(200).send({ articles });
+    })
+    .catch(next);
+};
+
+exports.addComment = (request, response, next) => {
+  const { article_id } = request.params;
+  const { username, body } = request.body;
+
+  if (isNaN(article_id)) {
+    return Promise.reject({ status: 400, msg: "Bad request" }).catch(next);
+  }
+
+  if (!username || !body) {
+    return Promise.reject({
+      status: 400,
+      msg: "Missing required fields",
+    }).catch(next);
+  }
+
+  checkArticleExists(article_id)
+    .then((exists) => {
+      if (!exists) {
+        return Promise.reject({ status: 404, msg: "Article not found" });
+      }
+      return insertComment(article_id, username, body);
+    })
+    .then((comment) => {
+      response.status(201).send({ comment });
     })
     .catch(next);
 };

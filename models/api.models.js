@@ -65,8 +65,36 @@ exports.insertComment = (article_id, username, body) => {
     });
 };
 
+
+// Task 8 --- Start
+exports.updateArticleVotes = (article_id, inc_votes) => {
+  return db
+    .query(
+      `UPDATE articles
+       SET votes = votes + $2
+       WHERE article_id = $1
+       RETURNING *;`,
+      [article_id, inc_votes]
+    )
+    .then((result) => {
+      return result.rows[0];
+    });
+};
+// Task 8 --- End
+
 // Task 9 --- Start
 exports.removeComment = (comment_id) => {
   return db.query("DELETE FROM comments WHERE comment_id = $1;", [comment_id]);
 };
 // Task 9 --- End
+
+
+// Task 10 --- Start
+exports.selectUsers = () => {
+  return db
+    .query("SELECT username, name, avatar_url FROM users;")
+    .then((result) => {
+      return result.rows;
+    });
+};
+// Task 10 --- End

@@ -244,6 +244,67 @@ describe("Task 7 Get: /api/articles/:article_id/comments", () => {
   });
 });
 
+
+describe("Task 8 Patch: /api/articles/:article_id", () => {
+  test("200: responds with the updated article", () => {
+    const newVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(newVote)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toHaveProperty("article_id", 1);
+        expect(body.article).toHaveProperty("votes", 101);
+      });
+  });
+
+  test("200: responds with the updated article after decrementing votes", () => {
+    const newVote = { inc_votes: -100 };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(newVote)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toHaveProperty("article_id", 1);
+        expect(body.article).toHaveProperty("votes", 1);
+      });
+  });
+
+  test("400: responds with 'Bad request' for an invalid article_id", () => {
+    const newVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/nonsense")
+      .send(newVote)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
+      });
+  });
+
+  test("400: responds with 'Bad request' for a malformed body", () => {
+    const newVote = { inc_votes: "nonsense" };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(newVote)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
+      });
+  });
+
+  test("404: responds with 'Article not found' for a valid but non-existent article_id", () => {
+    const newVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/9999")
+      .send(newVote)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Article not found");
+      });
+  });
+});
+
+
 describe("Task 9 DELETE: /api/comments/:comment_id", () => {
   test("204: delete comment", () => {
     return request(app)
@@ -260,6 +321,32 @@ describe("Task 9 DELETE: /api/comments/:comment_id", () => {
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe("Comment not found");
+      });
+  });
+});      
+      
+describe("Task 10 GET: /api/users", () => {
+  test("200: responds with an array of users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.users).toBeInstanceOf(Array);
+        expect(body.users).not.toHaveLength(0); // Check array is not empty
+        body.users.forEach((user) => {
+          expect(user).toHaveProperty("username");
+          expect(user).toHaveProperty("name");
+          expect(user).toHaveProperty("avatar_url");
+        });
+      });
+  });
+
+  test("404: responds with 'Route not found' for invalid endpoint", () => {
+    return request(app)
+      .get("/api/nonsense")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Route not found");
       });
   });
 });

@@ -7,7 +7,12 @@ const {
   getArticles,
   getCommentsByArticleId,
   addComment,
+
   deleteComment,
+
+  patchArticleVotes,
+  getUsers,
+
 } = require("./controllers/api.controllers");
 
 const app = express();
@@ -20,7 +25,13 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles/", getArticles);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.post("/api/articles/:article_id/comments", addComment);
+
+
+
+app.patch("/api/articles/:article_id", patchArticleVotes); // Task 8
 app.delete("/api/comments/:comment_id", deleteComment); // Task 9
+app.get("/api/users", getUsers); // Task 10
+
 
 app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Route not found" });

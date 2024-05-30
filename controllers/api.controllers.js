@@ -4,14 +4,13 @@ const {
   selectTopics,
   selectArticleById,
   selectAllArticles,
-
   checkArticleExists,
 
   updateArticleVotes,
 
   insertComment,
-
   selectCommentsByArticleId,
+
 
 
 } = require("../models/api.models");
@@ -58,19 +57,32 @@ exports.getArticles = (request, response, next) => {
     .catch(next);
 };
 
+exports.getCommentsByArticleId = (request, response, next) => {
+  const { article_id } = request.params;
+  if (isNaN(article_id)) {
+    return Promise.reject({ status: 400, msg: "Bad request" }).catch(next);
+  }
+
+  checkArticleExists(article_id)
+    .then((exists) => {
+      if (!exists) {
+        return Promise.reject({ status: 404, msg: "Article not found" });
+      }
+      return selectCommentsByArticleId(article_id);
+    })
+    .then((comments) => {
+      response.status(200).send({ comments });
+    })
+    .catch(next);
+};
 
 exports.addComment = (request, response, next) => {
   const { article_id } = request.params;
   const { username, body } = request.body;
 
-
-exports.getCommentsByArticleId = (request, response, next) => {
-  const { article_id } = request.params;
-
   if (isNaN(article_id)) {
     return Promise.reject({ status: 400, msg: "Bad request" }).catch(next);
   }
-
 
   if (!username || !body) {
     return Promise.reject({
@@ -79,23 +91,15 @@ exports.getCommentsByArticleId = (request, response, next) => {
     }).catch(next);
   }
 
-
   checkArticleExists(article_id)
     .then((exists) => {
       if (!exists) {
         return Promise.reject({ status: 404, msg: "Article not found" });
       }
-
       return insertComment(article_id, username, body);
     })
     .then((comment) => {
       response.status(201).send({ comment });
-
-      return selectCommentsByArticleId(article_id);
-    })
-    .then((comments) => {
-      response.status(200).send({ comments });
-
     })
     .catch(next);
 };
@@ -137,3 +141,4 @@ exports.patchArticleVotes = (request, response, next) => {
 //     })
 //     .catch(next);
 // };
+

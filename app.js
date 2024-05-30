@@ -5,13 +5,14 @@ const {
   getApi,
   getArticleById,
   getArticles,
-
-  addComment,
-
   getCommentsByArticleId,
+
 
   patchArticleVotes,
 
+
+
+  addComment,
 
 } = require("./controllers/api.controllers");
 
@@ -25,9 +26,12 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles/", getArticles);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
+
 app.patch("/api/articles/:article_id", patchArticleVotes);
 
 app.all("*", (req, res) => {
+
+
 
 app.post("/api/articles/:article_id/comments", addComment);
 

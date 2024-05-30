@@ -15,14 +15,6 @@ exports.selectArticleById = (article_id) => {
 };
 
 exports.selectAllArticles = (sort_by = "created_at", order = "DESC") => {
-  // extra work that Hannah said can be removed, but I want to keep it in case I will need it again
-  // const validSortBy = ["created_at"];
-  // const validOrder = ["ASC", "DESC"];
-
-  // if (!validSortBy.includes(sort_by) || !validOrder.includes(order)) {
-  //   return Promise.reject({ status: 400, msg: "Invalid query" });
-  // }
-
   queryString = `
       SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count
       FROM articles
@@ -36,6 +28,29 @@ exports.selectAllArticles = (sort_by = "created_at", order = "DESC") => {
   });
 };
 
+exports.checkArticleExists = (article_id) => {
+  return db
+    .query("SELECT * FROM articles WHERE article_id = $1;", [article_id])
+    .then((result) => {
+      return result.rowCount > 0;
+    });
+};
+
+exports.selectCommentsByArticleId = (article_id) => {
+  return db
+    .query(
+      `
+      SELECT comment_id, votes, created_at, author, body, article_id
+      FROM comments
+      WHERE article_id = $1
+      ORDER BY created_at DESC;
+    `,
+      [article_id]
+    )
+    .then((result) => {
+      return result.rows;
+    });
+};
 
 exports.checkArticleExists = (article_id) => {
   return db
@@ -55,29 +70,6 @@ exports.insertComment = (article_id, username, body) => {
     )
     .then((result) => {
       return result.rows[0];
-
-exports.selectCommentsByArticleId = (article_id) => {
-  return db
-    .query(
-      `
-      SELECT comment_id, votes, created_at, author, body, article_id
-      FROM comments
-      WHERE article_id = $1
-      ORDER BY created_at DESC;
-    `,
-      [article_id]
-    )
-    .then((result) => {
-      return result.rows;
-    });
-};
-
-
-exports.checkArticleExists = (article_id) => {
-  return db
-    .query("SELECT * FROM articles WHERE article_id = $1;", [article_id])
-    .then((result) => {
-      return result.rowCount > 0;
     });
 };
 
@@ -94,4 +86,3 @@ exports.updateArticleVotes = (article_id, inc_votes) => {
       return result.rows[0];
     });
 };
-

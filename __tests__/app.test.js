@@ -244,6 +244,32 @@ describe("Task 7 Get: /api/articles/:article_id/comments", () => {
   });
 });
 
+describe("Task 10 GET: /api/users", () => {
+  test("200: responds with an array of users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.users).toBeInstanceOf(Array);
+        expect(body.users).not.toHaveLength(0); // Check array is not empty
+        body.users.forEach((user) => {
+          expect(user).toHaveProperty("username");
+          expect(user).toHaveProperty("name");
+          expect(user).toHaveProperty("avatar_url");
+        });
+      });
+  });
+
+  test("404: responds with 'Route not found' for invalid endpoint", () => {
+    return request(app)
+      .get("/api/nonsense")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Route not found");
+      });
+  });
+});
+
 // describe("", () => {
 //   test("", () => {});
 // });

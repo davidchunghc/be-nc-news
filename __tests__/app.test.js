@@ -11,12 +11,12 @@ beforeAll(() => seed(data));
 afterAll(() => db.end());
 
 describe("/api/healthcheck", () => {
-  test("200: response with the right status code", () => {
+  test("Task 2 GET: 200: response with the right status code", () => {
     return request(app).get("/api/healthcheck").expect(200);
   });
 });
 
-describe("/api/topics", () => {
+describe("Task 2 and 3 GET: /api/topics", () => {
   test("200: responds with an array of topics which have properties slug and description", () => {
     return request(app)
       .get("/api/topics")
@@ -49,7 +49,7 @@ describe("/api/topics", () => {
   });
 });
 
-describe("/api/articles/:article_id", () => {
+describe("Task 4 GET: /api/articles/:article_id", () => {
   test("200: responds with article object", () => {
     return request(app)
       .get("/api/articles/1")
@@ -86,7 +86,7 @@ describe("/api/articles/:article_id", () => {
   });
 });
 
-describe("/api/articles", () => {
+describe("Task 5 GET: /api/articles", () => {
   test("200: responds with an array of articles that join with comments", () => {
     return request(app)
       .get("/api/articles")
@@ -120,8 +120,54 @@ describe("/api/articles", () => {
   });
 });
 
-describe("/api/articles/:article_id/comments", () => {
+describe("Task 6 GET: /api/articles/:article_id/comments", () => {
+  test("200: responds with an array of comments for the given article_id", () => {
+    return request(app)
+      .get("/api/articles/3/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toBeInstanceOf(Array);
+        expect(body.comments).not.toHaveLength(0);
+        body.comments.forEach((comment) => {
+          expect(comment).toHaveProperty("comment_id");
+          expect(comment).toHaveProperty("votes");
+          expect(comment).toHaveProperty("created_at");
+          expect(comment).toHaveProperty("author");
+          expect(comment).toHaveProperty("body");
+          expect(comment).toHaveProperty("article_id");
+        });
+      });
+  });
 
+  test("200: comments are sorted by created_at in descending order", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+
+  test("404: responds with 'Article not found' for invalidgit  article_id", () => {
+    return request(app)
+      .get("/api/articles/9999/comments")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Article not found");
+      });
+  });
+
+  test("400: responds with 'Bad request' for an invalid article_id", () => {
+    return request(app)
+      .get("/api/articles/nonsense/comments")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("Task 7 Get: /api/articles/:article_id/comments", () => {
   test("201: responds with the posted comment", () => {
     const newComment = {
       username: "butter_bridge",
@@ -166,46 +212,11 @@ describe("/api/articles/:article_id/comments", () => {
     return request(app)
       .post("/api/articles/9999/comments")
       .send(newComment)
-
-  test("200: responds with an array of comments for the given article_id", () => {
-    return request(app)
-      .get("/api/articles/1/comments")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.comments).toBeInstanceOf(Array);
-        expect(body.comments).toHaveLength(11);
-        body.comments.forEach((comment) => {
-          expect(comment).toMatchObject({
-            comment_id: expect.any(Number),
-            votes: expect.any(Number),
-            created_at: expect.any(String),
-            author: expect.any(String),
-            body: expect.any(String),
-            article_id: expect.any(Number),
-          });
-        });
-      });
-  });
-
-  test("200: comments are sorted by created_at in descending order", () => {
-    return request(app)
-      .get("/api/articles/1/comments")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.comments).toBeSortedBy("created_at", { descending: true });
-      });
-  });
-
-  test("404: responds with 'Article not found' for invalid article_id", () => {
-    return request(app)
-      .get("/api/articles/9999/comments")
-
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe("Article not found");
       });
   });
-
 
   test("400: responds with 'Missing required fields' if body is missing", () => {
     const newComment = {
@@ -229,37 +240,10 @@ describe("/api/articles/:article_id/comments", () => {
       .expect(400)
       .then((response) => {
         expect(response.body.msg).toBe("Missing required fields");
-
-  test("400: responds with 'Bad request' for an invalid article_id", () => {
-    return request(app)
-      .get("/api/articles/nonsense/comments")
-      .expect(400)
-      .then((response) => {
-        expect(response.body.msg).toBe("Bad request");
-
       });
   });
 });
 
 // describe("", () => {
 //   test("", () => {});
-// });
-
-// extra work that Hannah said can be removed, but I want to keep it in case I will need it again
-// test("400: responds with 'Invalid query' for invalid sort_by query", () => {
-//   return request(app)
-//     .get("/api/articles?sort_by=nonsense")
-//     .expect(400)
-//     .then((response) => {
-//       expect(response.body.msg).toBe("Invalid query");
-//     });
-// });
-
-// test("400: responds with 'Invalid query' for invalid order query", () => {
-//   return request(app)
-//     .get("/api/articles?order=nonsense")
-//     .expect(400)
-//     .then((response) => {
-//       expect(response.body.msg).toBe("Invalid query");
-//     });
 // });

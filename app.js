@@ -5,11 +5,8 @@ const {
   getApi,
   getArticleById,
   getArticles,
-
-  addComment,
-
   getCommentsByArticleId,
-
+  addComment,
 } = require("./controllers/api.controllers");
 
 const app = express();
@@ -21,7 +18,6 @@ app.get("/api", getApi);
 app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles/", getArticles);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
-
 app.post("/api/articles/:article_id/comments", addComment);
 
 app.all("/*", (req, res) => {

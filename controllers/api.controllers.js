@@ -7,6 +7,7 @@ const {
   checkArticleExists,
   insertComment,
   selectCommentsByArticleId,
+  removeComment,
 } = require("../models/api.models");
 const endpoints = require("../endpoints.json");
 
@@ -97,3 +98,18 @@ exports.addComment = (request, response, next) => {
     })
     .catch(next);
 };
+
+// Task 9 --- Start
+exports.deleteComment = (request, response, next) => {
+  const { comment_id } = request.params;
+
+  removeComment(comment_id)
+    .then((result) => {
+      if (result.rowCount === 0) {
+        return Promise.reject({ status: 404, msg: "Comment not found" });
+      }
+      response.status(204).send();
+    })
+    .catch(next);
+};
+// Task 9 --- End

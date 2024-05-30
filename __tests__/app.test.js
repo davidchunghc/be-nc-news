@@ -244,6 +244,26 @@ describe("Task 7 Get: /api/articles/:article_id/comments", () => {
   });
 });
 
+describe("Task 9 DELETE: /api/comments/:comment_id", () => {
+  test("204: delete comment", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+
+  test("404: responds with 'Comment not found' with invalid comment_id", () => {
+    return request(app)
+      .delete("/api/comments/9999")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Comment not found");
+      });
+  });
+});
+
 // describe("", () => {
 //   test("", () => {});
 // });

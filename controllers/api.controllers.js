@@ -7,6 +7,7 @@ const {
   checkArticleExists,
   insertComment,
   selectCommentsByArticleId,
+  selectUsers,
 } = require("../models/api.models");
 const endpoints = require("../endpoints.json");
 
@@ -97,3 +98,13 @@ exports.addComment = (request, response, next) => {
     })
     .catch(next);
 };
+
+// Task 10 --- Start
+exports.getUsers = (request, response, next) => {
+  selectUsers()
+    .then((users) => {
+      response.status(200).send({ users });
+    })
+    .catch(next);
+};
+// Task 10 --- End

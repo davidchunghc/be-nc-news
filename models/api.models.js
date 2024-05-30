@@ -64,3 +64,13 @@ exports.insertComment = (article_id, username, body) => {
       return result.rows[0];
     });
 };
+
+// Task 10 --- Start
+exports.selectUsers = () => {
+  return db
+    .query("SELECT username, name, avatar_url FROM users;")
+    .then((result) => {
+      return result.rows;
+    });
+};
+// Task 10 --- End

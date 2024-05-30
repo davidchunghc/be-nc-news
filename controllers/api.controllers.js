@@ -7,8 +7,12 @@ const {
   checkArticleExists,
   insertComment,
   selectCommentsByArticleId,
+
+  removeComment,
+
   selectUsers,
   updateArticleVotes,
+
 } = require("../models/api.models");
 const endpoints = require("../endpoints.json");
 
@@ -100,6 +104,7 @@ exports.addComment = (request, response, next) => {
     .catch(next);
 };
 
+
 // Task 8 --- Start
 exports.patchArticleVotes = (request, response, next) => {
   const { article_id } = request.params;
@@ -123,6 +128,22 @@ exports.patchArticleVotes = (request, response, next) => {
 };
 // Task 8 --- End
 
+// Task 9 --- Start
+exports.deleteComment = (request, response, next) => {
+  const { comment_id } = request.params;
+
+  removeComment(comment_id)
+    .then((result) => {
+      if (result.rowCount === 0) {
+        return Promise.reject({ status: 404, msg: "Comment not found" });
+      }
+      response.status(204).send();
+    })
+    .catch(next);
+};
+// Task 9 --- End
+
+
 // Task 10 --- Start
 exports.getUsers = (request, response, next) => {
   selectUsers()
@@ -132,3 +153,4 @@ exports.getUsers = (request, response, next) => {
     .catch(next);
 };
 // Task 10 --- End
+

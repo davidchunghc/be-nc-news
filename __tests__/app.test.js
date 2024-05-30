@@ -244,6 +244,7 @@ describe("Task 7 Get: /api/articles/:article_id/comments", () => {
   });
 });
 
+
 describe("Task 8 Patch: /api/articles/:article_id", () => {
   test("200: responds with the updated article", () => {
     const newVote = { inc_votes: 1 };
@@ -303,6 +304,27 @@ describe("Task 8 Patch: /api/articles/:article_id", () => {
   });
 });
 
+
+describe("Task 9 DELETE: /api/comments/:comment_id", () => {
+  test("204: delete comment", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+
+  test("404: responds with 'Comment not found' with invalid comment_id", () => {
+    return request(app)
+      .delete("/api/comments/9999")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Comment not found");
+      });
+  });
+});      
+      
 describe("Task 10 GET: /api/users", () => {
   test("200: responds with an array of users", () => {
     return request(app)

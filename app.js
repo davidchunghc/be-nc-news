@@ -5,10 +5,15 @@ const {
   getApi,
   getArticleById,
   getArticles,
+
+  addComment,
+
   getCommentsByArticleId,
+
 } = require("./controllers/api.controllers");
 
 const app = express();
+app.use(express.json());
 
 app.get("/api/healthcheck", getHealthcheck);
 app.get("/api/topics", getTopics);
@@ -17,7 +22,9 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles/", getArticles);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
-app.all("*", (req, res) => {
+app.post("/api/articles/:article_id/comments", addComment);
+
+app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Route not found" });
 });
 

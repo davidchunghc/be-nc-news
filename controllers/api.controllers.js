@@ -8,10 +8,14 @@ const {
   insertComment,
   selectCommentsByArticleId,
 
+  selectUsers,
+
+
   removeComment,
 
   selectUsers,
   updateArticleVotes,
+
 
 } = require("../models/api.models");
 const endpoints = require("../endpoints.json");

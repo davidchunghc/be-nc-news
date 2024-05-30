@@ -66,6 +66,7 @@ exports.insertComment = (article_id, username, body) => {
 };
 
 
+
 // Task 8 --- Start
 exports.updateArticleVotes = (article_id, inc_votes) => {
   return db

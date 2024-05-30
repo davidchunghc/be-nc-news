@@ -65,6 +65,22 @@ exports.insertComment = (article_id, username, body) => {
     });
 };
 
+// Task 8 --- Start
+exports.updateArticleVotes = (article_id, inc_votes) => {
+  return db
+    .query(
+      `UPDATE articles
+       SET votes = votes + $2
+       WHERE article_id = $1
+       RETURNING *;`,
+      [article_id, inc_votes]
+    )
+    .then((result) => {
+      return result.rows[0];
+    });
+};
+// Task 8 --- End
+
 // Task 10 --- Start
 exports.selectUsers = () => {
   return db

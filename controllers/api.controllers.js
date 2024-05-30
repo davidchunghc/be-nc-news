@@ -8,6 +8,7 @@ const {
   insertComment,
   selectCommentsByArticleId,
   selectUsers,
+  updateArticleVotes,
 } = require("../models/api.models");
 const endpoints = require("../endpoints.json");
 
@@ -98,6 +99,29 @@ exports.addComment = (request, response, next) => {
     })
     .catch(next);
 };
+
+// Task 8 --- Start
+exports.patchArticleVotes = (request, response, next) => {
+  const { article_id } = request.params;
+  const { inc_votes } = request.body;
+
+  if (isNaN(article_id) || typeof inc_votes !== "number") {
+    return next({ status: 400, msg: "Bad request" });
+  }
+
+  checkArticleExists(article_id)
+    .then((exists) => {
+      if (!exists) {
+        return Promise.reject({ status: 404, msg: "Article not found" });
+      }
+      return updateArticleVotes(article_id, inc_votes);
+    })
+    .then((article) => {
+      response.status(200).send({ article });
+    })
+    .catch(next);
+};
+// Task 8 --- End
 
 // Task 10 --- Start
 exports.getUsers = (request, response, next) => {

@@ -65,8 +65,6 @@ exports.insertComment = (article_id, username, body) => {
     });
 };
 
-
-
 // Task 8 --- Start
 exports.updateArticleVotes = (article_id, inc_votes) => {
   return db
@@ -88,7 +86,6 @@ exports.removeComment = (comment_id) => {
   return db.query("DELETE FROM comments WHERE comment_id = $1;", [comment_id]);
 };
 // Task 9 --- End
-
 
 // Task 10 --- Start
 exports.selectUsers = () => {

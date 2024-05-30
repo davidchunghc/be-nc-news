@@ -244,7 +244,6 @@ describe("Task 7 Get: /api/articles/:article_id/comments", () => {
   });
 });
 
-
 describe("Task 8 Patch: /api/articles/:article_id", () => {
   test("200: responds with the updated article", () => {
     const newVote = { inc_votes: 1 };
@@ -304,7 +303,6 @@ describe("Task 8 Patch: /api/articles/:article_id", () => {
   });
 });
 
-
 describe("Task 9 DELETE: /api/comments/:comment_id", () => {
   test("204: delete comment", () => {
     return request(app)
@@ -323,8 +321,7 @@ describe("Task 9 DELETE: /api/comments/:comment_id", () => {
         expect(response.body.msg).toBe("Comment not found");
       });
   });
-});      
-      
+});
 
 describe("Task 10 GET: /api/users", () => {
   test("200: responds with an array of users", () => {

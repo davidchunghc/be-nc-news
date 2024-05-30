@@ -7,16 +7,9 @@ const {
   checkArticleExists,
   insertComment,
   selectCommentsByArticleId,
-
-  selectUsers,
-
-
   removeComment,
-
   selectUsers,
   updateArticleVotes,
-
-
 } = require("../models/api.models");
 const endpoints = require("../endpoints.json");
 
@@ -108,7 +101,6 @@ exports.addComment = (request, response, next) => {
     .catch(next);
 };
 
-
 // Task 8 --- Start
 exports.patchArticleVotes = (request, response, next) => {
   const { article_id } = request.params;
@@ -147,7 +139,6 @@ exports.deleteComment = (request, response, next) => {
 };
 // Task 9 --- End
 
-
 // Task 10 --- Start
 exports.getUsers = (request, response, next) => {
   selectUsers()
@@ -157,4 +148,3 @@ exports.getUsers = (request, response, next) => {
     .catch(next);
 };
 // Task 10 --- End
-

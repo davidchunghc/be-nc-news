@@ -14,19 +14,42 @@ exports.selectArticleById = (article_id) => {
     });
 };
 
-exports.selectAllArticles = (sort_by = "created_at", order = "DESC") => {
-  queryString = `
+// Task 5 & 11 --- Start
+exports.selectAllArticles = (topic) => {
+  let queryString = `
       SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count
       FROM articles
       LEFT JOIN comments ON articles.article_id = comments.article_id
-      GROUP BY articles.article_id
-      ORDER BY ${sort_by} ${order};
     `;
 
-  return db.query(queryString).then((result) => {
-    return result.rows;
-  });
+  const queryParams = [];
+  if (topic) {
+    queryString += ` WHERE articles.topic = $1`;
+    queryParams.push(topic);
+  }
+
+  queryString += ` GROUP BY articles.article_id ORDER BY created_at DESC;`;
+
+  const fetchArticles = () => {
+    return db.query(queryString, queryParams).then((result) => {
+      return result.rows;
+    });
+  };
+
+  if (!topic) {
+    return fetchArticles();
+  }
+
+  return db
+    .query("SELECT * FROM topics WHERE slug = $1;", [topic])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Topic not found" });
+      }
+      return fetchArticles();
+    });
 };
+// Task 5 & 11 --- End
 
 exports.checkArticleExists = (article_id) => {
   return db

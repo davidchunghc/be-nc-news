@@ -349,6 +349,36 @@ describe("Task 10 GET: /api/users", () => {
   });
 });
 
+describe("Task 11 GET: /api/articles (topic query)", () => {
+  test("200: responds with articles filtered by topic", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toHaveLength(12);
+        body.articles.forEach((article) => {
+          expect(article).toHaveProperty("author");
+          expect(article).toHaveProperty("title");
+          expect(article).toHaveProperty("article_id");
+          expect(article).toHaveProperty("topic", "mitch");
+          expect(article).toHaveProperty("created_at");
+          expect(article).toHaveProperty("votes");
+          expect(article).toHaveProperty("article_img_url");
+          expect(article).toHaveProperty("comment_count");
+        });
+      });
+  });
+
+  test("404: responds with 'Topic not found' for non-existent topic", () => {
+    return request(app)
+      .get("/api/articles?topic=nonsense")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Topic not found");
+      });
+  });
+});
+
 // describe("", () => {
 //   test("", () => {});
 // });

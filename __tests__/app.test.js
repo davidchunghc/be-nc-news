@@ -388,6 +388,36 @@ describe("Task 11 GET: /api/articles (topic query)", () => {
   });
 });
 
+describe("Task 12 GET: /api/articles/:article_id (comment_count)", () => {
+  test("200: responds with article object plus new property 'comment_count' and value", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then((response) => {
+        const article = response.body.article;
+        expect(article).toHaveProperty("author");
+        expect(article).toHaveProperty("title");
+        expect(article).toHaveProperty("article_id");
+        expect(article).toHaveProperty("body");
+        expect(article).toHaveProperty("topic");
+        expect(article).toHaveProperty("created_at");
+        expect(article).toHaveProperty("votes");
+        expect(article).toHaveProperty("article_img_url");
+        expect(article).toHaveProperty("comment_count", "12");
+      });
+  });
+
+  test("200: responds with article object plus new property 'comment_count' if no comment found", () => {
+    return request(app)
+      .get("/api/articles/2")
+      .expect(200)
+      .then((response) => {
+        const article = response.body.article;
+        expect(article).toHaveProperty("comment_count", "0");
+      });
+  });
+});
+
 // describe("", () => {
 //   test("", () => {});
 // });

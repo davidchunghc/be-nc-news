@@ -3,7 +3,7 @@ const {
   getHealthcheck,
   getTopics,
   getApi,
-  getArticleById,
+  getArticleById, // Task 4 & 12
   getArticles, // Task 5 & 11
   getCommentsByArticleId,
   addComment,
@@ -18,7 +18,7 @@ app.use(express.json());
 app.get("/api/healthcheck", getHealthcheck);
 app.get("/api/topics", getTopics);
 app.get("/api", getApi);
-app.get("/api/articles/:article_id", getArticleById);
+app.get("/api/articles/:article_id", getArticleById); // Task 4 & 12
 app.get("/api/articles/", getArticles); // Task 5 & 11
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.post("/api/articles/:article_id/comments", addComment);

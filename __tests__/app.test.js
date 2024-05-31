@@ -369,6 +369,15 @@ describe("Task 11 GET: /api/articles (topic query)", () => {
       });
   });
 
+  test("200: responds with valid topic query, but has no articles responds with an empty array of articles", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toHaveLength(0);
+      });
+  });
+
   test("404: responds with 'Topic not found' for non-existent topic", () => {
     return request(app)
       .get("/api/articles?topic=nonsense")

@@ -46,13 +46,16 @@ exports.getArticleById = (request, response, next) => {
     .catch(next);
 };
 
+// Task 5 & 11 --- Start
 exports.getArticles = (request, response, next) => {
-  selectAllArticles()
+  const { topic } = request.query;
+  selectAllArticles(topic)
     .then((articles) => {
       response.status(200).send({ articles });
     })
     .catch(next);
 };
+// Task 5 & 11 --- End
 
 exports.getCommentsByArticleId = (request, response, next) => {
   const { article_id } = request.params;

@@ -15,9 +15,9 @@ const {
 const app = express();
 app.use(express.json());
 
+app.get("/api", getApi);
 app.get("/api/healthcheck", getHealthcheck);
 app.get("/api/topics", getTopics);
-app.get("/api", getApi);
 app.get("/api/articles/:article_id", getArticleById); // Task 4 & 12
 app.get("/api/articles/", getArticles); // Task 5 & 11
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);

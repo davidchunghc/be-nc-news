@@ -14,6 +14,8 @@ const {
 
 const app = express();
 app.use(express.json());
+const cors = require("cors");
+app.use(cors());
 
 app.get("/api", getApi);
 app.get("/api/healthcheck", getHealthcheck);
@@ -34,6 +36,7 @@ app.use((err, req, res, next) => {
   if (err.status) {
     res.status(err.status).send({ msg: err.msg });
   } else {
+    console.log(err);
     res.status(500).send({ msg: "Internal Server Error" });
   }
 });

@@ -80,6 +80,12 @@ exports.addComment = (request, response, next) => {
   const { article_id } = request.params;
   const { username, body } = request.body;
 
+  console.log("Console from controllers:", {
+    article_id,
+    username,
+    body,
+  });
+
   if (isNaN(article_id)) {
     return Promise.reject({ status: 400, msg: "Bad request" }).catch(next);
   }

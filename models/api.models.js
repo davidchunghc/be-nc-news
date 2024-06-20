@@ -83,6 +83,7 @@ exports.selectCommentsByArticleId = (article_id) => {
 };
 
 exports.insertComment = (article_id, username, body) => {
+  console.log("Console from model:", { article_id, username, body });
   return db
     .query(
       `INSERT INTO comments (article_id, author, body, votes, created_at)
